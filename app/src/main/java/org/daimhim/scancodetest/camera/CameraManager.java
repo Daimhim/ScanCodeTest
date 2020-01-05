@@ -39,7 +39,7 @@ import java.io.IOException;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-@SuppressWarnings("deprecation") // camera APIs
+@SuppressWarnings("deprecation") // mOpenCamera APIs
 public final class CameraManager {
 
     private static final String TAG = CameraManager.class.getSimpleName();
@@ -51,7 +51,7 @@ public final class CameraManager {
 
     private final Context context;
     private final CameraConfigurationManager configManager;
-    private OpenCamera camera;
+    private OpenCamera mOpenCamera;
     private AutoFocusManager autoFocusManager;
     private Rect framingRect;
     private Rect framingRectInPreview;
@@ -73,19 +73,19 @@ public final class CameraManager {
     }
 
     /**
-     * Opens the camera driver and initializes the hardware parameters.
+     * Opens the mOpenCamera driver and initializes the hardware parameters.
      *
-     * @param holder The surface object which the camera will draw preview frames into.
-     * @throws IOException Indicates the camera driver failed to open.
+     * @param holder The surface object which the mOpenCamera will draw preview frames into.
+     * @throws IOException Indicates the mOpenCamera driver failed to open.
      */
     public synchronized void openDriver(SurfaceHolder holder) throws IOException {
-        OpenCamera theCamera = camera;
+        OpenCamera theCamera = mOpenCamera;
         if (theCamera == null) {
             theCamera = OpenCameraInterface.open(requestedCameraId);
             if (theCamera == null) {
                 throw new IOException("Camera.open() failed to return object from driver");
             }
-            camera = theCamera;
+            mOpenCamera = theCamera;
         }
 
         if (!initialized) {
@@ -106,7 +106,7 @@ public final class CameraManager {
         } catch (RuntimeException re) {
             // Driver failed
             Log.w(TAG, "Camera rejected parameters. Setting only minimal safe-mode parameters");
-            Log.i(TAG, "Resetting to saved camera params: " + parametersFlattened);
+            Log.i(TAG, "Resetting to saved mOpenCamera params: " + parametersFlattened);
             // Reset:
             if (parametersFlattened != null) {
                 parameters = cameraObject.getParameters();
@@ -125,17 +125,17 @@ public final class CameraManager {
     }
 
     public synchronized boolean isOpen() {
-        return camera != null;
+        return mOpenCamera != null;
     }
 
     /**
-     * Closes the camera driver if still in use.
+     * Closes the mOpenCamera driver if still in use.
      */
     public synchronized void closeDriver() {
-        if (camera != null) {
-            camera.getCamera().release();
-            camera = null;
-            // Make sure to clear these each time we close the camera, so that any scanning rect
+        if (mOpenCamera != null) {
+            mOpenCamera.getCamera().release();
+            mOpenCamera = null;
+            // Make sure to clear these each time we close the mOpenCamera, so that any scanning rect
             // requested by intent is forgotten.
             framingRect = null;
             framingRectInPreview = null;
@@ -143,10 +143,10 @@ public final class CameraManager {
     }
 
     /**
-     * Asks the camera hardware to begin drawing preview frames to the screen.
+     * Asks the mOpenCamera hardware to begin drawing preview frames to the screen.
      */
     public synchronized void startPreview() {
-        OpenCamera theCamera = camera;
+        OpenCamera theCamera = mOpenCamera;
         if (theCamera != null && !previewing) {
             theCamera.getCamera().startPreview();
             previewing = true;
@@ -155,15 +155,15 @@ public final class CameraManager {
     }
 
     /**
-     * Tells the camera to stop drawing preview frames.
+     * Tells the mOpenCamera to stop drawing preview frames.
      */
     public synchronized void stopPreview() {
         if (autoFocusManager != null) {
             autoFocusManager.stop();
             autoFocusManager = null;
         }
-        if (camera != null && previewing) {
-            camera.getCamera().stopPreview();
+        if (mOpenCamera != null && previewing) {
+            mOpenCamera.getCamera().stopPreview();
             previewCallback.setHandler(null, 0);
             previewing = false;
         }
@@ -175,7 +175,7 @@ public final class CameraManager {
      * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
      */
     public synchronized void setTorch(boolean newSetting) {
-        OpenCamera theCamera = camera;
+        OpenCamera theCamera = mOpenCamera;
         if (theCamera != null && newSetting != configManager.getTorchState(theCamera.getCamera())) {
             boolean wasAutoFocusManager = autoFocusManager != null;
             if (wasAutoFocusManager) {
@@ -199,7 +199,7 @@ public final class CameraManager {
      * @param message The what field of the message to be sent.
      */
     public synchronized void requestPreviewFrame(Handler handler, int message) {
-        OpenCamera theCamera = camera;
+        OpenCamera theCamera = mOpenCamera;
         if (theCamera != null && previewing) {
             previewCallback.setHandler(handler, message);
             theCamera.getCamera().setOneShotPreviewCallback(previewCallback);
@@ -215,7 +215,7 @@ public final class CameraManager {
      */
     public synchronized Rect getFramingRect() {
         if (framingRect == null) {
-            if (camera == null) {
+            if (mOpenCamera == null) {
                 return null;
             }
             Point screenResolution = configManager.getScreenResolution();
@@ -273,10 +273,10 @@ public final class CameraManager {
 
 
     /**
-     * Allows third party apps to specify the camera ID, rather than determine
+     * Allows third party apps to specify the mOpenCamera ID, rather than determine
      * it automatically based on available cameras and their orientation.
      *
-     * @param cameraId camera ID of the camera to use. A negative value means "no preference".
+     * @param cameraId mOpenCamera ID of the mOpenCamera to use. A negative value means "no preference".
      */
     public synchronized void setManualCameraId(int cameraId) {
         requestedCameraId = cameraId;

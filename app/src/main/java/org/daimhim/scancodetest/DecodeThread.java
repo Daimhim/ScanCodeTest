@@ -31,11 +31,11 @@ public class DecodeThread extends Thread {
         Collection<BarcodeFormat> decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
 
         decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.INDUSTRIAL_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.PRODUCT_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.AZTEC_FORMATS);
-        decodeFormats.addAll(DecodeFormatManager.PDF417_FORMATS);
+//        decodeFormats.addAll(DecodeFormatManager.INDUSTRIAL_FORMATS);
+//        decodeFormats.addAll(DecodeFormatManager.PRODUCT_FORMATS);
+//        decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+//        decodeFormats.addAll(DecodeFormatManager.AZTEC_FORMATS);
+//        decodeFormats.addAll(DecodeFormatManager.PDF417_FORMATS);
 
         hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
         hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK, resultPointCallback);

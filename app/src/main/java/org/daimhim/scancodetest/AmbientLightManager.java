@@ -46,7 +46,8 @@ final class AmbientLightManager implements SensorEventListener {
     void start(CameraManager cameraManager) {
         this.cameraManager = cameraManager;
         if (FrontLightMode.readPref() == FrontLightMode.AUTO) {
-            SensorManager sensorManager = (SensorManager) mIScanCode.getActivity().getSystemService(Context.SENSOR_SERVICE);
+            SensorManager sensorManager = (SensorManager) mIScanCode
+                    .getActivity().getSystemService(Context.SENSOR_SERVICE);
             lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
             if (lightSensor != null) {
                 sensorManager.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
@@ -56,7 +57,8 @@ final class AmbientLightManager implements SensorEventListener {
 
     void stop() {
         if (lightSensor != null) {
-            SensorManager sensorManager = (SensorManager) mIScanCode.getActivity().getSystemService(Context.SENSOR_SERVICE);
+            SensorManager sensorManager = (SensorManager) mIScanCode
+                    .getActivity().getSystemService(Context.SENSOR_SERVICE);
             sensorManager.unregisterListener(this);
             cameraManager = null;
             lightSensor = null;

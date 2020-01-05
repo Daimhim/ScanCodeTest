@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.concurrent.RejectedExecutionException;
 
 
-@SuppressWarnings("deprecation") // camera APIs
+@SuppressWarnings("deprecation") // mCamera APIs
 final class AutoFocusManager implements Camera.AutoFocusCallback {
 
     private static final String TAG = AutoFocusManager.class.getSimpleName();
@@ -47,11 +47,11 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
     private boolean stopped;
     private boolean focusing;
     private final boolean useAutoFocus;
-    private final Camera camera;
+    private final Camera mCamera;
     private AsyncTask<?, ?, ?> outstandingTask;
 
     AutoFocusManager(Context context, Camera camera) {
-        this.camera = camera;
+        this.mCamera = camera;
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         String currentFocusMode = camera.getParameters().getFocusMode();
         useAutoFocus =
@@ -85,7 +85,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
             outstandingTask = null;
             if (!stopped && !focusing) {
                 try {
-                    camera.autoFocus(this);
+                    mCamera.autoFocus(this);
                     focusing = true;
                 } catch (RuntimeException re) {
                     // Have heard RuntimeException reported in Android 4.0.x+; continue?
@@ -112,7 +112,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
             cancelOutstandingTask();
             // Doesn't hurt to call this even if not focusing
             try {
-                camera.cancelAutoFocus();
+                mCamera.cancelAutoFocus();
             } catch (RuntimeException re) {
                 // Have heard RuntimeException reported in Android 4.0.x+; continue?
                 Log.w(TAG, "Unexpected exception while cancelling focusing", re);
