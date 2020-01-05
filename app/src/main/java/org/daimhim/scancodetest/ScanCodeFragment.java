@@ -124,6 +124,8 @@ public class ScanCodeFragment  extends Fragment implements SurfaceHolder.Callbac
             Log.w(TAG, "handleDecode " + pResult.toString());
         }
         mBeepManager.playBeepSoundAndVibrate();
+        Message message = Message.obtain(mScanCodeHandler, R.id.restart_preview);
+        mScanCodeHandler.sendMessageDelayed(message,3000);
     }
 
     @Override
