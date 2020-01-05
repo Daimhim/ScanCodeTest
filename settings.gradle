@@ -1,2 +1,2 @@
-include ':app', ':scancode'
+include ':app', ':scancode', ':demo'
 rootProject.name='ScanCodeTest'

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ScanCodeTest</string>
+    <string name="button_ok">Ok</string>
 </resources>
